@@ -1,3 +1,13 @@
 tr {
     height: 14px;
 }
+
+th.header {
+    width: 100px;
+    text-align: center;
+    border: 1px outset #cdcdcd;
+    background-color: bisque;
+    font-weight: bold;
+    position: sticky;
+    left: 0;
+}

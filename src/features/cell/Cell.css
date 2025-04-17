@@ -1,9 +1,19 @@
 td {
-    border: 1px solid grey;
-    height: 14px;
+    border: 1px solid #cdcdcd;
+    overflow: hidden;
+    text-align: left;
+}
+
+td.active {
+    box-shadow: 0 0 0 2px green;
 }
 
 input {
     border: none transparent;
     outline: none;
+    width: 100%;
+}
+
+td div {
+    padding: 0 2px 0 2px;
 }
