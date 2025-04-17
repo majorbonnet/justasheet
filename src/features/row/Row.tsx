@@ -1,9 +1,10 @@
+import "./Row.css"
 import type { JSX } from "react"
-import { Cell } from './Cell'
+import { Cell } from '../cell/Cell'
 
 const cells: object[] = [];
 
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 20; i++) {
     cells.push([])
 }
 

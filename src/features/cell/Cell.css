@@ -1,0 +1,9 @@
+td {
+    border: 1px solid grey;
+    height: 14px;
+}
+
+input {
+    border: none transparent;
+    outline: none;
+}
