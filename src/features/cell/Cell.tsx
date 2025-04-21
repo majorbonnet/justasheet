@@ -8,7 +8,7 @@ import {
     updateCell,
     setActiveCell,
     deactivateCell
-} from "../sheet/sheetSlice"
+} from "./cellSlice"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 
 export const Cell = (props: CellCoord): JSX.Element => {
