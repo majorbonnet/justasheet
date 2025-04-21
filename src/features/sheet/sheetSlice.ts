@@ -100,6 +100,11 @@ export const sheetSlice = createAppSlice({
             (state) => {
                 state.sheetInfo = { ...state.sheetInfo, rowCount: state.sheetInfo.rowCount + 10 };
             }
+        ),
+        addColumns: create.reducer(
+            (state) => {
+                state.sheetInfo = { ...state.sheetInfo, columnCount: state.sheetInfo.columnCount + 10 };
+            }
         )
     }),
     selectors: {
@@ -127,6 +132,6 @@ export const sheetSlice = createAppSlice({
 
 
 
-export const { updateCell, setActiveCell, deactivateCell, addRows } = sheetSlice.actions
+export const { updateCell, setActiveCell, deactivateCell, addRows, addColumns } = sheetSlice.actions
 export const { selectPopulatedCell, getRowCount, getColumnCount, getCustomColumnWidths, getCustomRowHeights } = sheetSlice.selectors
 

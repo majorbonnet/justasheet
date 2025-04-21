@@ -3,7 +3,8 @@ import type { JSX } from "react"
 import { Row } from '../row/Row';
 import { 
     getRowCount,
-    addRows
+    addRows,
+    addColumns
  } from "./sheetSlice";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 
@@ -15,6 +16,10 @@ export const SheetBodyRows = (): JSX.Element => {
     const onWindowScroll = (_e: Event) => {
         if (document.body.scrollHeight - 200 < window.scrollY + window.innerHeight) {
              dispatch(addRows());
+        }
+
+        if (document.body.scrollWidth - 200 < window.scrollX + window.innerWidth) {
+            dispatch(addColumns());
         }
     }
 
