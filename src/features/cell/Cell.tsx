@@ -16,7 +16,8 @@ export const Cell = (props: CellCoord): JSX.Element => {
     const cellInfo: CellState = useAppSelector((state) => selectPopulatedCell(state, props.rowNumber, props.columnNumber));
     
     const literalValue = cellInfo?.literalValue;
-    const displayValue = cellInfo?.displayValue
+    const displayValue = cellInfo?.displayValue;
+    const valueType = cellInfo?.valueType;
     const isActive = cellInfo?.isActive ?? false;
 
     const handleCellClicked = (_e: React.MouseEvent<HTMLTableCellElement>) => {
@@ -45,7 +46,7 @@ export const Cell = (props: CellCoord): JSX.Element => {
                     autoComplete="off"
                     autoFocus />
             ) : (
-                <div>
+                <div className={`cell-type-${valueType ?? "string"}`}>
                     {displayValue}
                 </div>
             )}

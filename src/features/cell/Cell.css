@@ -17,3 +17,15 @@ input {
 td div {
     padding: 0 2px 0 2px;
 }
+
+.cell-type-string {
+    text-align: left;
+}
+
+.cell-type-number {
+    text-align: right;
+}
+
+.cell-type-formula {
+    text-align: center;
+}
