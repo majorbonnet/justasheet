@@ -27,7 +27,7 @@ export const SheetBodyRows = (): JSX.Element => {
 
     for (let i = 0; i < rowCount; i++) {
         rowElements.push(
-            (<Row key={i} rowNumber={i} />)
+            (<Row key={i} rowIndex={i} />)
         )
     }
 

@@ -1,17 +1,19 @@
 import type { CellState } from "../models/CellState";
 import type { CellInfo, CellValueType } from "../models/CellInfo";
+import type { CellUpdate } from "../models/CellUpdate";
 
-const getNewCellInfo = (literalValue: string) : CellState => {
+const getNewCellInfo = (cellUpdate: CellUpdate) : CellInfo => {
     return {
-        literalValue: literalValue,
-        displayValue: getDisplayValue(literalValue),
+        cellId: getCellId(cellUpdate.coords.columnIndex, cellUpdate.coords.rowIndex),
+        literalValue: cellUpdate.value,
+        displayValue: getDisplayValue(cellUpdate.value),
         valueType: "string",
         isActive: false,
         referencedBy: []
     };
 }
 
-const getUpdatedCellInfo = (currentState: CellInfo, literalValue: string) : CellState => {
+const getUpdatedCellState = (currentState: CellInfo, literalValue: string) : CellState => {
     // no cell value and the cell is not referenced by any other cell, we can remove the value
     if (literalValue === "" && 
         typeof currentState !== "undefined" &&
@@ -50,7 +52,20 @@ const getValueType = (literalValue: string): CellValueType => {
     return "number";
 }
 
+const getColumnLabel = (columnIndex: number): string => {
+    const charIndex = columnIndex % 26;
+    const charCount = Math.floor(columnIndex / 26) + 1;
+
+    return (String.fromCharCode(65 + charIndex)).repeat(charCount);
+}
+
+const getCellId = (columnIndex: number, rowIndex: number): string => {
+    return `${getColumnLabel(columnIndex)}${(rowIndex + 1).toString()}`
+}
+
 export default {
     getNewCellInfo,
-    getUpdatedCellInfo
+    getUpdatedCellState,
+    getColumnLabel,
+    getCellId
 } 

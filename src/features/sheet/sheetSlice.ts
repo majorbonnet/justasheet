@@ -1,8 +1,9 @@
 import { createAppSlice } from "../../app/createAppSlice"
 
 import type { ColumnWidths, RowHeights, SheetInfo } from "../../models/SheetInfo"
-import { DefaultRowCount, DefaultColumnCount } from "../../models/SheetInfo"
+import { DefaultColumnCount, DefaultRowCount, MaxColumnCount, MaxRowCount } from "../../models/SheetInfo"
 
+const sheetGrowthIncrement = 10;
 
 let sheetInfo: SheetInfo = {
     rowCount: DefaultRowCount,
@@ -25,12 +26,24 @@ export const sheetSlice = createAppSlice({
     reducers: create => ({
         addRows: create.reducer(
             (state) => {
-                state.rowCount = state.rowCount + 10;
+                if (!(state.rowCount >= MaxRowCount)) {
+                    if (state.rowCount + sheetGrowthIncrement >= MaxRowCount) {
+                        state.rowCount = MaxRowCount;
+                    } else {
+                        state.rowCount = state.rowCount + 10;
+                    }
+                }
             }
         ),
         addColumns: create.reducer(
             (state) => {
-                state.columnCount = state.columnCount + 10;
+                if (!(state.columnCount >= MaxColumnCount)) {
+                    if (state.columnCount + sheetGrowthIncrement >= MaxColumnCount) {
+                        state.columnCount = MaxRowCount;
+                    } else {
+                        state.columnCount = state.columnCount + 10;
+                    }
+                }
             }
         )
     }),

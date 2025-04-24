@@ -1,6 +1,6 @@
 import "./Cell.css"
 import type { JSX } from "react"
-import type { CellCoord } from "../../models/CellCoord"
+import type { CellCoords } from "../../models/CellCoords"
 import type { CellState } from "../../models/CellState"
 
 import {
@@ -9,23 +9,22 @@ import {
     setActiveCell,
     deactivateCell
 } from "./cellSlice"
+
+import cellHandlerService from "../../services/cellHandlerService"
+
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 
-export const Cell = (props: CellCoord): JSX.Element => {
+export const Cell = (props: CellCoords): JSX.Element => {
     const dispatch = useAppDispatch()
-    const cellInfo: CellState = useAppSelector((state) => selectPopulatedCell(state, props.rowNumber, props.columnNumber));
-    
-    const literalValue = cellInfo?.literalValue;
-    const displayValue = cellInfo?.displayValue;
-    const valueType = cellInfo?.valueType;
+    const cellInfo: CellState = useAppSelector((state) => selectPopulatedCell(state, props.columnIndex, props.rowIndex));
     const isActive = cellInfo?.isActive ?? false;
 
     const handleCellClicked = (_e: React.MouseEvent<HTMLTableCellElement>) => {
-        dispatch(setActiveCell({ rowNumber: props.rowNumber, columnNumber: props.columnNumber, value: ""}));
+        dispatch(setActiveCell({  columnIndex: props.columnIndex, rowIndex: props.rowIndex, } ));
     }
 
     const handleTextChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch(updateCell({ rowNumber: props.rowNumber, columnNumber: props.columnNumber, value: e.target.value }));
+        dispatch(updateCell({ coords: { columnIndex: props.columnIndex, rowIndex: props.rowIndex }, value: e.target.value }));
     }
 
     const handleKeyUp= (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -35,19 +34,19 @@ export const Cell = (props: CellCoord): JSX.Element => {
     } 
 
     return (
-        <td onClick={handleCellClicked} className={isActive ? "active" : ""}>
+        <td onClick={handleCellClicked} className={isActive ? "active" : ""} id={`cell-${cellInfo?.cellId ?? cellHandlerService.getCellId(props.columnIndex, props.rowIndex)}`}>
             {isActive ?
             (
                 <input 
                     name="cellInput"
-                    defaultValue={literalValue}
+                    defaultValue={cellInfo?.literalValue}
                     onChange={handleTextChanged}
                     onKeyUp={handleKeyUp}
                     autoComplete="off"
                     autoFocus />
             ) : (
-                <div className={`cell-type-${valueType ?? "string"}`}>
-                    {displayValue}
+                <div className={`cell-type-${cellInfo?.valueType ?? "string"}`}>
+                    {cellInfo?.displayValue}
                 </div>
             )}
         </td>
