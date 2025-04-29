@@ -6,7 +6,6 @@ import {
  } from "./sheetSlice";
 import { useAppSelector, useWindowDimensions } from "../../app/hooks";
 import { DefaultColumnCount } from "../../models/SheetInfo";
-import cellHandlerService from "../../services/cellHandlerService";
 
 export const SheetHeaderRow = (): JSX.Element => {
     const columnCount = useAppSelector(state => getColumnCount(state));
@@ -16,11 +15,19 @@ export const SheetHeaderRow = (): JSX.Element => {
 
     const getColumnWidth = (columnIndex: number) :string => customColumnWidths[columnIndex] ?? `${(((width) / DefaultColumnCount) - 4).toString()}px`
 
+    const getColumnLabel = (columnIndex: number): string => {
+        const charIndex = columnIndex % 26;
+        const charCount = Math.floor(columnIndex / 26) + 1;
+
+        return (String.fromCharCode(65 + charIndex)).repeat(charCount);
+    }
+
+
     for (let i = 0; i < columnCount; i++) {
 
         headerCellElements.push(
             <th key={i} className="header" style={{width: getColumnWidth(i)}}>
-                {cellHandlerService.getColumnLabel(i)}
+                {getColumnLabel(i)}
             </th>
         )
     }

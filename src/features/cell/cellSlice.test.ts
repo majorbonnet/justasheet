@@ -1,15 +1,14 @@
 import type { AppStore } from "../../app/store"
 import { makeStore } from "../../app/store"
+import type { CellInfo } from "../../models/CellInfo"
 import type { CellCollection } from "./cellSlice" 
-
-import cellHandlerService from "../../services/cellHandlerService"
 
 import {
     updateCell, 
     setActiveCell, 
     deactivateCell,
-    selectCellById,
-    selectActiveCellId,
+    selectCell,
+    selectActiveCell,
     cellSlice
 } from "./cellSlice"
 
@@ -19,19 +18,47 @@ type CellSliceTestContext = {
 
 describe("cellSlice reducer", () => {
     beforeEach<CellSliceTestContext>(context => {
-        const activeCell = cellHandlerService.getNewCellInfo({ coords: { columnIndex: 0, rowIndex: 4 }, value: "my cell value"});
-        activeCell.isActive = true;
-
-        const initialState: CellCollection = {
-            activeCellId: "A5",
-            cells: {
-                "A5": activeCell,
-                "B5": cellHandlerService.getNewCellInfo({ coords: { columnIndex: 1, rowIndex: 4 }, value: "my second cell value"}),  
-                "K11": cellHandlerService.getNewCellInfo({ coords: { columnIndex: 10, rowIndex: 10 }, value: "my third cell value"}),              
-            }
+        const activeCell: CellInfo = {
+            columnIndex: 0,
+            rowIndex: 4,
+            isActive:  true,
+            literalValue: "my cell value",
+            displayValue: "my cell value",
+            valueType: "string",
+            typedValue: "my cell value",
+            referencedBy: []           
         }
 
-        console.log(initialState);
+        const secondCell: CellInfo = {
+            columnIndex: 1,
+            rowIndex: 4,
+            isActive:  true,
+            literalValue: "my second cell value",
+            displayValue: "my second cell value",
+            valueType: "string",
+            typedValue: "my second cell value",
+            referencedBy: []           
+        }
+
+        const thirdCell: CellInfo = {
+            columnIndex: 10,
+            rowIndex: 10,
+            isActive:  true,
+            literalValue: "my third cell value",
+            displayValue: "my third cell value",
+            valueType: "string",
+            typedValue: "my third cell value",
+            referencedBy: []           
+        }
+
+        const initialState: CellCollection = {
+            activeCellKey: "0:4",
+            cells: {
+                "0:4": activeCell,
+                "1:4": secondCell,
+                "10:10": thirdCell              
+            }
+        }
 
         const store = makeStore({ cell: initialState });
         context.store = store;
@@ -39,38 +66,41 @@ describe("cellSlice reducer", () => {
 
     it("should handle initial state", () => {
         expect(cellSlice.reducer(undefined, { type: "unknown" })).toStrictEqual({
-            activeCellId: "",
+            activeCellKey: "",
             cells: {}
         });
     });
 
     it<CellSliceTestContext>("should handle deactivating the active cell", ({ store }) => {
-        expect(selectActiveCellId(store.getState())).toBe("A5");
-        expect(selectCellById(store.getState(), "A5")?.isActive).toBeTruthy();
+        expect(selectActiveCell(store.getState())?.columnIndex).toBe(0);
+        expect(selectActiveCell(store.getState())?.rowIndex).toBe(4);
+        expect(selectActiveCell(store.getState())?.isActive).toBeTruthy();
 
         store.dispatch(deactivateCell());
 
-        expect(selectActiveCellId(store.getState())).toBe("");
-        expect(selectCellById(store.getState(), "A5")?.isActive).toBeFalsy();
+        expect(selectActiveCell(store.getState())).toBeUndefined();
     });
 
     it<CellSliceTestContext>("should handle switching the active cell", ({ store }) => {
-        expect(selectActiveCellId(store.getState())).toBe("A5");
-        expect(selectCellById(store.getState(), "A5")?.isActive).toBeTruthy();
+        expect(selectActiveCell(store.getState())?.columnIndex).toBe(0);
+        expect(selectActiveCell(store.getState())?.rowIndex).toBe(4);
+        expect(selectActiveCell(store.getState())?.isActive).toBeTruthy();
 
         store.dispatch(setActiveCell({ columnIndex: 3, rowIndex: 5 }));
 
-        expect(selectActiveCellId(store.getState())).toBe("D6");
-        expect(selectCellById(store.getState(), "D6")?.isActive).toBeTruthy();
-        expect(selectCellById(store.getState(), "A5")?.isActive).toBeFalsy();
+        expect(selectActiveCell(store.getState())?.columnIndex).toBe(3);
+        expect(selectActiveCell(store.getState())?.rowIndex).toBe(5);
+        expect(selectActiveCell(store.getState())?.isActive).toBeTruthy();
+        expect(selectCell(store.getState(), 0, 4)?.isActive).toBeFalsy();
     });
 
     it<CellSliceTestContext>("should update a cell value", ({ store }) => {
         const newCellValue = "my updated cell value";
-        expect(selectCellById(store.getState(), "A5")?.literalValue).toBe("my cell value");
+        expect(selectCell(store.getState(), 0, 4)?.literalValue).toBe("my cell value");
 
         store.dispatch(updateCell({ coords: {columnIndex: 0, rowIndex: 4 }, value: newCellValue }));
 
-        expect(selectCellById(store.getState(), "A5")?.literalValue).toBe(newCellValue);
+        expect(selectCell(store.getState(), 0, 4)?.literalValue).toBe(newCellValue);
     });
 });
+
